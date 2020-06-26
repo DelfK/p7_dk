@@ -7,6 +7,9 @@ const bodyParser = require('body-parser');
 // import path
 const path = require('path');
 
+// import DB
+const db = require('./config/database')
+
 // create the server
 const app = express();
 
