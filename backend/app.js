@@ -7,9 +7,6 @@ const bodyParser = require('body-parser');
 // import path
 const path = require('path');
 
-// import DB
-const db = require('./config/database')
-
 // create the server
 const app = express();
 
@@ -27,7 +24,7 @@ app.use('/api', apiRouter);
 
 
 // Setting the port
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 4000;
 
 // Run the server
 app.listen(PORT, () => {
