@@ -7,11 +7,20 @@ const bodyParser = require('body-parser');
 // import path
 const path = require('path');
 
+const session= require('express-session');
+
 // create the server
 const app = express();
 
 // use body-parser on all routes
 app.use(bodyParser.json());
+
+// use session
+app.use(session({
+    secret: 'secret-key',
+    resave: false,
+    saveUninitialized: true,
+  }));
 
 // Testing a route
 app.get('/', (req, res, next) => {
