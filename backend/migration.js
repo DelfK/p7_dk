@@ -7,9 +7,10 @@ db.serialize( () => {
              '`id` INTEGER PRIMARY KEY AUTOINCREMENT, ' +
              '`name` TEXT NOT NULL, ' +
              '`first_name` TEXT NOT NULL, ' +
-             '`email` INTEGER NOT NULL UNIQUE, ' +
+             '`email` TEXT NOT NULL UNIQUE, ' +
              '`password` TEXT NOT NULL, ' +
              '`position` TEXT, ' +
-             '`imageUrl` TEXT )'
+             '`imageUrl` TEXT, ' +
+             '`deleted` BOOLEAN DEFAULT false )'
         )
   });
