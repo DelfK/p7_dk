@@ -7,6 +7,7 @@ const bodyParser = require('body-parser');
 // import path
 const path = require('path');
 
+// import express-session
 const session= require('express-session');
 
 // create the server
@@ -17,7 +18,7 @@ app.use(bodyParser.json());
 
 
 // serving static images from the images folder with express static
-  // using the path /images to load the images from the folder /images
+  // using the path /images to serve the images from the folder /images
   // getting the images from a static folder using the absolute path with the root folder dirname
   // result > https://localhost:3000/images/[filename]
   app.use('/images', express.static(path.join(__dirname, 'images')));

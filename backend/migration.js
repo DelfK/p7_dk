@@ -1,7 +1,7 @@
 const sqlite3 = require('sqlite3');
 const db = new sqlite3.Database('./database.sqlite');
 
-
+// create the DB tables
 db.serialize( () => {
     db.run('CREATE TABLE IF NOT EXISTS `Employee` ( ' +
              '`id` INTEGER PRIMARY KEY AUTOINCREMENT, ' +
