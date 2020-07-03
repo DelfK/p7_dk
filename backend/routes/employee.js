@@ -1,5 +1,7 @@
 const employeeRouter = require('express').Router();
 
+
+
 //DB
 const sqlite3 = require('sqlite3');
 const db = new sqlite3.Database('./database.sqlite');
@@ -20,6 +22,12 @@ const multer = require('../middleware/multer-config');
 // import the controllers
 const employeeCtrl = require('../controllers/employee');
 
+// import auth middleware
+const auth = require('../middleware/auth');
+
+const storyRouter = require('./story');
+
+employeeRouter.use('/:employeeId/stories', storyRouter);
 
 
 // LOGIN
@@ -124,14 +132,10 @@ employeeRouter.post('/signin', [
 // DISPLAY ONE EMPLOYEE
 employeeRouter.get('/:employeeId', employeeCtrl.getOneEmployee);
 
-
 // UPDATE ONE EMPLOYEE
 employeeRouter.put('/:employeeId', multer, employeeCtrl.updateOneEmployee);
 
-
 // DELETE ONE EMPLOYEE
 employeeRouter.delete('/:employeeId', employeeCtrl.deleteOneEmployee);
-
-
 
 module.exports = employeeRouter;
