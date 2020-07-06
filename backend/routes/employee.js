@@ -30,6 +30,23 @@ const storyRouter = require('./story');
 employeeRouter.use('/:employeeId/stories', storyRouter);
 
 
+// GET ALL THE STORIES
+employeeRouter.get('/stories', (req, res, next) => {
+  const sql = 'SELECT Stories.id, Stories.title, Stories.content, Stories.imageUrl, Stories.employee_id, ' +
+            'Employee.name, Employee.first_name FROM Stories JOIN Employee ON Stories.employee_id = Employee.id';
+            
+  db.all(sql, (error, stories) => {
+    if(error){
+      next(error)
+    } else if(stories) {
+      res.status(200).json(stories);
+    } else {
+      res.sendStatus(400);
+    }
+  })
+});
+
+
 // LOGIN
 employeeRouter.post('/login', [
     check('email', 'Your email is not valid').not().isEmpty().normalizeEmail(),
@@ -137,5 +154,7 @@ employeeRouter.put('/:employeeId', multer, employeeCtrl.updateOneEmployee);
 
 // DELETE ONE EMPLOYEE
 employeeRouter.delete('/:employeeId', employeeCtrl.deleteOneEmployee);
+
+
 
 module.exports = employeeRouter;

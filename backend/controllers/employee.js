@@ -88,7 +88,7 @@ exports.deleteOneEmployee = (req, res, next) => {
           next(error);
         } else if(employee) {
 
-          const fileToRemove = employee.id + '_' + employee.name + employee.first_name;
+          const folderToRemove = employee.id + '_' + employee.name + employee.first_name;
 
           // Remove the employee folder and its content
           const removeDir = (path) => {
@@ -113,7 +113,7 @@ exports.deleteOneEmployee = (req, res, next) => {
               
             }
           }
-          const pathToDir = path.join('images', fileToRemove)
+          const pathToDir = path.join('images', folderToRemove)
           removeDir(pathToDir);
           
 
