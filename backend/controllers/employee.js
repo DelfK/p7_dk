@@ -8,6 +8,22 @@ const path = require('path');
 // fs
 const fs = require('fs');
 
+// GET ALL THE STORIES
+exports.getStories = (req, res, next) => {
+  const sql = 'SELECT Stories.id, Stories.title, Stories.content, Stories.imageUrl, Stories.employee_id, ' +
+            'Employee.name, Employee.first_name FROM Stories JOIN Employee ON Stories.employee_id = Employee.id';
+            
+  db.all(sql, (error, stories) => {
+    if(error){
+      next(error)
+    } else if(stories) {
+      res.status(200).json(stories);
+    } else {
+      res.sendStatus(400);
+    }
+  })
+};
+
 // GET EMPLOYEE
 exports.getOneEmployee = (req, res, next) => {
     const sql = 'SELECT id, name, first_name, email, position, imageUrl FROM Employee WHERE Employee.id = $employeeId';
