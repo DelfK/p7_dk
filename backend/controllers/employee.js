@@ -24,7 +24,7 @@ exports.getStories = (req, res, next) => {
   })
 };
 
-// GET EMPLOYEE
+// GET ONE EMPLOYEE
 exports.getOneEmployee = (req, res, next) => {
     const sql = 'SELECT id, name, first_name, email, position, imageUrl FROM Employee WHERE Employee.id = $employeeId';
     const values = {$employeeId: `${req.params.employeeId}`};
@@ -48,6 +48,23 @@ exports.getOneEmployee = (req, res, next) => {
 
 
 };
+
+//GET ALL EMPLOYEES
+exports.getEmployees = (req, res, next) => {
+  const sql = 'SELECT id, name, first_name , imageUrl FROM Employee';
+
+  db.all(sql, (error, employees) => {
+      if (error) {
+          next(error);
+        } else if(employees) {
+          res.status(200).json({employees: employees})
+        } else {
+          res.sendStatus(404);
+        }
+
+  })
+
+}
 
 
 // UPDATE EMPLOYEE
@@ -151,8 +168,23 @@ exports.deleteOneEmployee = (req, res, next) => {
         }
 
   })
+};
 
+// GET SHARED STORIES
+exports.displaySharedStories = (req, res, next) => {
+  const employeeId = req.params.employeeId
+  const sql = 'SELECT DISTINCT Stories.title, Stories.employee_id, Employee.name, Employee.first_name ' +
+              'FROM Stories JOIN Shares ON Stories.id = Shares.story_id '+
+              'JOIN Employee ON Stories.employee_id = Employee.id ' +
+              'WHERE Shares.recipient_id = $employeeId ';
+  const values = { $employeeId: employeeId };
 
-
+  db.all(sql, values, (err, shares) => {
+    if(err){
+      next(err)
+    } else {
+      res.status(200).json({shares : shares})
+    }
+  })
 
 };

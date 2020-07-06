@@ -156,3 +156,31 @@ exports.deleteOneStory = (req, res, next) => {
         };
     });
 };
+
+// POST ONE SHARE
+exports.shareAStory = (req, res, next) => {
+    db.run('INSERT INTO Shares (story_id, recipient_id)' +
+    'VALUES ($storyId, $recipientId)',
+    {
+        $recipientId : req.body.share.recipientId,
+        $storyId: req.params.storyId
+    }, function(err) {
+        if(err){
+            next(err)
+        } else {
+            
+            db.get(`SELECT * FROM Shares WHERE Shares.id = ${this.lastID}`, (error, share) => {
+                if(err){
+                    next(err)
+                } else if(share){
+                    res.status(201).json({share: share})
+                } else {
+                    res.sendStatus(400);  
+                }
+            })
+        }
+    
+    });
+
+};
+

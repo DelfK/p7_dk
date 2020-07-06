@@ -22,4 +22,10 @@ db.serialize( () => {
     '`employee_id` INTEGER NOT NULL, ' +
     'FOREIGN KEY(`employee_id`) REFERENCES `Employee`(`id`) )');
 
+    db.run('CREATE TABLE IF NOT EXISTS `Shares` ( ' +
+    '`id` INTEGER PRIMARY KEY AUTOINCREMENT, ' +
+    '`story_id` INTEGER NOT NULL, ' +
+    '`recipient_id` INTEGER NOT NULL, ' +
+    'FOREIGN KEY(`story_id`) REFERENCES `Stories`(`id`) ' +
+    'FOREIGN KEY(`recipient_id`) REFERENCES `Employee`(`id`) )');
 });

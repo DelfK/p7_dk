@@ -35,4 +35,7 @@ storyRouter.put('/:storyId', multer, storyCtrl.updateOneStory);
 // DELETE ONE STORY
 storyRouter.delete('/:storyId', storyCtrl.deleteOneStory);
 
+// POST ONE SHARE
+storyRouter.post('/:storyId/shares', storyCtrl.shareAStory)
+
 module.exports = storyRouter;

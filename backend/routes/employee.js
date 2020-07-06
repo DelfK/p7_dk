@@ -130,11 +130,18 @@ employeeRouter.get('/stories', employeeCtrl.getStories)
 // DISPLAY ONE EMPLOYEE
 employeeRouter.get('/:employeeId', employeeCtrl.getOneEmployee);
 
+// GET ALL EMPLOYEES
+employeeRouter.get('/', employeeCtrl.getEmployees);
+
 // UPDATE ONE EMPLOYEE
 employeeRouter.put('/:employeeId', multer, employeeCtrl.updateOneEmployee);
 
 // DELETE ONE EMPLOYEE
 employeeRouter.delete('/:employeeId', employeeCtrl.deleteOneEmployee);
+
+
+// GET SHARED STORIES
+employeeRouter.get('/:employeeId/shares', employeeCtrl.displaySharedStories);
 
 
 module.exports = employeeRouter;
