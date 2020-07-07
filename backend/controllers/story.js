@@ -8,7 +8,7 @@ const fs = require('fs');
 
 // GET ALL THE STORIES OF AN EMPLOYEE
 exports.getAllStories = (req, res, next) => {
-    const sql = 'SELECT Stories.id, Stories.title, Stories.content, Stories.imageUrl, Stories.employee_id, Employee.name, Employee.first_name ' +
+    const sql = 'SELECT Stories.id, Stories.title, Stories.content, Stories.imageUrl, Stories.employee_id, Employee.name, Employee.first_name, Employee.imageUrl AS profileImage, Employee.deleted ' +
     'FROM Stories JOIN Employee ON Stories.employee_id = Employee.id '+
     'WHERE Stories.employee_id = $employeeId ';
 
@@ -18,7 +18,17 @@ exports.getAllStories = (req, res, next) => {
     if(error){
     next(error)
     } else if(stories) {
+        // IF EMPLOYEE DELETED SEND PLACEHOLDERS FOR employee name and story image
+        stories.forEach(story => {
+            if (story.deleted === 1) {
+                story.imageUrl = `${req.protocol}://${req.get('host')}/images/story.jpg`;
+                story.profileImage = `${req.protocol}://${req.get('host')}/images/user.png`;
+                story.name = "Groupomania";
+                story.first_name = " ";
+            }
+        });
     res.status(200).json(stories);
+    
     } else {
     res.sendStatus(400);
     }
@@ -28,7 +38,7 @@ exports.getAllStories = (req, res, next) => {
 
 // GET ONE STORY
 exports.getOneStory = (req, res, next) => {
-    const sql = 'SELECT Stories.id, Stories.title, Stories.content, Stories.imageUrl, Stories.employee_id, Employee.name, Employee.first_name ' +
+    const sql = 'SELECT Stories.id, Stories.title, Stories.content, Stories.imageUrl, Stories.employee_id, Employee.name, Employee.first_name, Employee.imageUrl AS profileImage, Employee.deleted ' +
                 'FROM Stories JOIN Employee ON Stories.employee_id = Employee.id '+
                 'WHERE Stories.id = $storyId ';
    
@@ -38,7 +48,16 @@ exports.getOneStory = (req, res, next) => {
       if(error){
         next(error)
       } else if(story) {
+        if(story.deleted === 1){
+            story.imageUrl = `${req.protocol}://${req.get('host')}/images/story.jpg`;
+            story.profileImage = `${req.protocol}://${req.get('host')}/images/user.png`;
+            story.name = "Groupomania";
+            story.first_name = " ";
+        };
         res.status(200).json(story);
+
+        
+        
       } else {
         res.sendStatus(400);
       }
