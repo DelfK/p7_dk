@@ -12,6 +12,7 @@ const multer = require('../middleware/multer-config');
 
 // auth
 const auth = require('../middleware/auth');
+const moderate = require('../middleware/moderate');
 
 // import the controllers
 const employeeCtrl = require('../controllers/employee');
@@ -27,15 +28,20 @@ storyRouter.get('/', storyCtrl.getAllStories);
 storyRouter.get('/:storyId', storyCtrl.getOneStory);
 
 // CREATE ONE STORY
-storyRouter.post('/', multer, storyCtrl.createOneStory);
+storyRouter.post('/', auth, multer, storyCtrl.createOneStory);
 
 // UPDATE ONE STORY
-storyRouter.put('/:storyId', multer, storyCtrl.updateOneStory);
+storyRouter.put('/:storyId', auth,multer, storyCtrl.updateOneStory);
 
 // DELETE ONE STORY
-storyRouter.delete('/:storyId', storyCtrl.deleteOneStory);
+storyRouter.delete('/:storyId', auth, storyCtrl.deleteOneStory);
 
 // POST ONE SHARE
-storyRouter.post('/:storyId/shares', storyCtrl.shareAStory)
+storyRouter.post('/:storyId/shares', auth, storyCtrl.shareAStory);
+
+// POST ONE COMMENT
+storyRouter.post('/:storyId/comments', auth, storyCtrl.commentAStory)
+
+
 
 module.exports = storyRouter;

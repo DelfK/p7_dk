@@ -18,7 +18,7 @@ exports.getAllStories = (req, res, next) => {
     if(error){
     next(error)
     } else if(stories) {
-        // IF EMPLOYEE DELETED SEND PLACEHOLDERS FOR employee name and story image
+        // If deleted send placeholders as employee name, profile image and story image
         stories.forEach(story => {
             if (story.deleted === 1) {
                 story.imageUrl = `${req.protocol}://${req.get('host')}/images/story.jpg`;
@@ -48,6 +48,7 @@ exports.getOneStory = (req, res, next) => {
       if(error){
         next(error)
       } else if(story) {
+        // If deleted send placeholders as employee name, profile image and story image
         if(story.deleted === 1){
             story.imageUrl = `${req.protocol}://${req.get('host')}/images/story.jpg`;
             story.profileImage = `${req.protocol}://${req.get('host')}/images/user.png`;
@@ -202,4 +203,33 @@ exports.shareAStory = (req, res, next) => {
     });
 
 };
+
+// COMMENT A STORY
+exports.commentAStory = (req, res, next) =>{
+    db.run('INSERT INTO Comments (content, story_id, employee_id)' +
+    'VALUES ($content, $storyId, $employeeId)',
+    {
+        $content : req.body.comment.content,
+        $storyId: req.params.storyId,
+        $employeeId: req.body.comment.employeeId
+    }, function(err) {
+        if(err){
+            next(err)
+        } else {
+            db.get(`SELECT * FROM Comments WHERE Comments.id = ${this.lastID}`, (error, comment) => {
+                if(err){
+                    next(err)
+                } else if(comment){
+                    res.status(201).json({comment: comment})
+                } else {
+                    res.sendStatus(400);  
+                }
+            })
+        }
+    
+    });
+
+};
+
+
 

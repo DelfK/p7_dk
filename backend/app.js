@@ -8,7 +8,7 @@ const bodyParser = require('body-parser');
 const path = require('path');
 
 // import express-session
-const session= require('express-session');
+//const session= require('express-session');
 
 // create the server
 const app = express();
@@ -24,11 +24,11 @@ app.use(bodyParser.json());
   app.use('/images', express.static(path.join(__dirname, 'images')));
 
 // use session
-app.use(session({
+/*app.use(session({
     secret: 'secret-key',
     resave: false,
     saveUninitialized: true,
-  }));
+  }));*/
 
 // Testing a route
 app.get('/', (req, res, next) => {

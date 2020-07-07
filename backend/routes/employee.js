@@ -24,6 +24,7 @@ const employeeCtrl = require('../controllers/employee');
 
 // import auth middleware
 const auth = require('../middleware/auth');
+const moderate = require('../middleware/moderate');
 
 const storyRouter = require('./story');
 
@@ -127,21 +128,30 @@ employeeRouter.post('/signin', [
 // GET THE STORIES FOR ALL THE EMPLOYEES
 employeeRouter.get('/stories', employeeCtrl.getStories)
 
+// GET THE COMMENTS FOR ALL THE EMPLOYEES
+employeeRouter.get('/comments', moderate, employeeCtrl.getComments)
+
 // DISPLAY ONE EMPLOYEE
-employeeRouter.get('/:employeeId', employeeCtrl.getOneEmployee);
+employeeRouter.get('/:employeeId', auth, employeeCtrl.getOneEmployee);
 
 // GET ALL EMPLOYEES
 employeeRouter.get('/', employeeCtrl.getEmployees);
 
 // UPDATE ONE EMPLOYEE
-employeeRouter.put('/:employeeId', multer, employeeCtrl.updateOneEmployee);
+employeeRouter.put('/:employeeId', auth, multer, employeeCtrl.updateOneEmployee);
 
 // DELETE ONE EMPLOYEE
-employeeRouter.delete('/:employeeId', employeeCtrl.deleteOneEmployee);
+employeeRouter.delete('/:employeeId', auth, employeeCtrl.deleteOneEmployee);
 
 
 // GET SHARED STORIES
 employeeRouter.get('/:employeeId/shares', employeeCtrl.displaySharedStories);
 
+// COMMENTS MODERATION ROUTES
+employeeRouter.delete('/comments/:commentId', moderate, employeeCtrl.deleteComment);
+
+employeeRouter.post('/comments/:commentId/remove', moderate, employeeCtrl.removeComment);
+
+employeeRouter.post('/comments/:commentId/approuve', moderate, employeeCtrl.approuveComment);
 
 module.exports = employeeRouter;

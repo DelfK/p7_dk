@@ -9,6 +9,21 @@ const path = require('path');
 const fs = require('fs');
 
 // GET ALL THE STORIES
+exports.getComments = (req, res, next) => {
+  const sql = 'SELECT * FROM Comments';
+            
+  db.all(sql, (error, comments) => {
+    if(error){
+      next(error)
+    } else if(comments) {
+      res.status(200).json(comments);
+    } else {
+      res.sendStatus(400);
+    }
+  })
+};
+
+// GET ALL THE COMMENTS
 exports.getStories = (req, res, next) => {
   const sql = 'SELECT Stories.id, Stories.title, Stories.content, Stories.imageUrl, Stories.employee_id, ' +
             'Employee.name, Employee.first_name FROM Stories JOIN Employee ON Stories.employee_id = Employee.id';
@@ -26,13 +41,13 @@ exports.getStories = (req, res, next) => {
 
 // GET ONE EMPLOYEE
 exports.getOneEmployee = (req, res, next) => {
-    const sql = 'SELECT id, name, first_name, email, position, imageUrl FROM Employee WHERE Employee.id = $employeeId';
+    const sql = 'SELECT id, name, first_name, email, position, imageUrl, deleted FROM Employee WHERE Employee.id = $employeeId';
     const values = {$employeeId: `${req.params.employeeId}`};
 
     db.get(sql, values, (error, employee) => {
         if (error) {
             next(error);
-          } else if(employee) {
+          } else if(employee && employee.deleted === false) {
             const image = employee.imageUrl;
             // send a placeholder for the profile image if none has been uploaded by the employee
             if(image === null) {
@@ -51,7 +66,7 @@ exports.getOneEmployee = (req, res, next) => {
 
 //GET ALL EMPLOYEES
 exports.getEmployees = (req, res, next) => {
-  const sql = 'SELECT id, name, first_name , imageUrl FROM Employee';
+  const sql = 'SELECT id, name, first_name , imageUrl, deleted FROM Employee WHERE deleted = 0';
 
   db.all(sql, (error, employees) => {
       if (error) {
@@ -187,4 +202,90 @@ exports.displaySharedStories = (req, res, next) => {
     }
   })
 
+};
+
+// DELETE A COMMENT
+exports.deleteComment = (req, res, next) => {
+  const sql = 'SELECT * FROM Comments WHERE Comments.id = $commentId';
+  const values = { $commentId : req.params.commentId}
+
+  db.get(sql, values, (error, comment) => {
+      if(error) {
+          next(error)
+      } else if (comment) {
+      
+          db.run(`DELETE FROM Comments WHERE Comments.id = $commentId `, {$commentId : comment.id}, (err) => {
+              if(err){
+                  next(err)
+              } else {
+                  res.sendStatus(204);
+              }
+          });
+          
+      } else {
+          res.sendStatus(400);
+      };
+  });
+
+};
+
+// REMOVE A COMMENT
+exports.removeComment = (req, res, next) => {
+  
+  const sqlRemove = 'UPDATE Comments SET approuve = $approuve ' +
+  'WHERE Comments.id = $commentId'
+  const values = {
+    $approuve: 0, 
+    $commentId : req.params.commentId
+  };
+
+  db.run(sqlRemove, values,  (err) => {
+      if(err){
+          next(err)
+      } else {
+          db.get('SELECT * FROM Comments WHERE Comments.id = $commentId', { $commentId : req.params.commentId},
+          (err, comment) => {
+            if(err){
+              next(err)
+            }else if(comment) {
+              res.status(200).json({comment: comment});
+            } else {
+              res.sendStatus(400);
+            }
+
+          });
+          
+      }
+  });
+};
+
+
+// APPROUVE A COMMENT
+exports.approuveComment = (req, res, next) => {
+  
+  const sqlRemove = 'UPDATE Comments SET approuve = $approuve ' +
+  'WHERE Comments.id = $commentId'
+  const values = {
+    $approuve: 1, 
+    $commentId : req.params.commentId
+  };
+
+  db.run(sqlRemove, values,  (err) => {
+      if(err){
+          next(err)
+      } else {
+          db.get('SELECT * FROM Comments WHERE Comments.id = $commentId', { $commentId : req.params.commentId},
+          (err, comment) => {
+            if(err){
+              next(err)
+            }else if(comment) {
+              res.status(200).json({comment: comment});
+            } else {
+              res.sendStatus(400);
+            }
+
+          });
+          
+      }
+  });
 };

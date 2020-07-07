@@ -11,6 +11,7 @@ db.serialize( () => {
         '`password` TEXT NOT NULL, ' +
         '`position` TEXT, ' +
         '`imageUrl` TEXT, ' +
+        '`role` TEXT NOT NULL DEFAULT contributor, ' +
         '`deleted` BOOLEAN DEFAULT 0 )');
 
     db.run('CREATE TABLE IF NOT EXISTS `Stories` ( ' +
@@ -28,4 +29,14 @@ db.serialize( () => {
     '`recipient_id` INTEGER NOT NULL, ' +
     'FOREIGN KEY(`story_id`) REFERENCES `Stories`(`id`) ' +
     'FOREIGN KEY(`recipient_id`) REFERENCES `Employee`(`id`) )');
+
+    db.run('CREATE TABLE IF NOT EXISTS `Comments` ( ' +
+    '`id` INTEGER PRIMARY KEY AUTOINCREMENT, ' +
+    '`content` TEXT NOT NULL, ' +
+    '`approuve` BOOLEAN DEFAULT 1, ' +
+    '`story_id` INTEGER NOT NULL, ' +
+    '`employee_id` INTEGER, ' +
+    'FOREIGN KEY(`story_id`) REFERENCES `Stories`(`id`) ' +
+    'FOREIGN KEY(`employee_id`) REFERENCES `Employee`(`id`) )' );
+    
 });
