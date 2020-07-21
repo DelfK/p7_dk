@@ -84,43 +84,69 @@ employeeRouter.post('/signin', [
     check('email', 'Your email is not valid').not().isEmpty().normalizeEmail(),
     check('password', 'Your password must be at least 8 characters').not().isEmpty().isLength({min: 8})
 ], (req, res, next) => {
-
-    bcrypt.hash(req.body.employee.password, 10)
-    .then( hash => {
-    const   name = req.body.employee.name,
-            firstname = req.body.employee.firstname
-            email = req.body.employee.email,
-            password = hash,
-            position = null,
-            imageUrl = null;
-    if(!name || !firstname || !email || !password) {
-        return res.sendStatus(400);
+   //const errors = validationResult(req);
+   db.get('SELECT * FROM Employee WHERE Employee.email = $email;', {$email: req.body.employee.email}, (error, employee) => {
+    // employee not existing
+    if(employee) {
+        return res.status(401).json({error: "Un compte existe déjà avec cet email. Merci d'choisir un autre"})
     };
+     //if (!errors.isEmpty()) {
+          //return res.status(422).json(errors.array());
+          //} else {
 
-    const sql = 'INSERT INTO Employee (name, first_name, email, password, position, imageUrl)' +
-      'VALUES ($name, $firstname, $email, $password, $position, $imageUrl)';
-    const values = {
-        $name: name,
-        $firstname: firstname,
-        $email: email,
-        $password: password,
-        $position: position,
-        $imageUrl: imageUrl
-    };
+            bcrypt.hash(req.body.employee.password, 10)
+            .then( hash => {
+            const   name = req.body.employee.name,
+                    firstname = req.body.employee.firstname,
+                    email = req.body.employee.email;
+                    password = hash,
+                    position = null,
+                    imageUrl = null;
+            if(!name || !firstname || !email || !password) {
+                return res.sendStatus(400);
+            };
+  
+            const sql = 'INSERT INTO Employee (name, first_name, email, password, position, imageUrl)' +
+              'VALUES ($name, $firstname, $email, $password, $position, $imageUrl)';
+            const values = {
+                $name: name,
+                $firstname: firstname,
+                $email: email,
+                $password: password,
+                $position: position,
+                $imageUrl: imageUrl
+            };
+  
+            db.run(sql, values, function(error) {
+                if (error) {
+                  next(error);
+                } else {
+                  db.get(`SELECT id, name, first_name, email, position, imageUrl FROM Employee WHERE Employee.id = ${this.lastID}`,
+                    (error, employee) => {
+                      res.status(201).json(employee);
+                    });
+                }
+              });
+  
+            })
+            .catch(error => { res.status(500).json({error: error}) })
+          //}// END ELSE
+  
 
-    db.run(sql, values, function(error) {
-        if (error) {
-          next(error);
-        } else {
-          db.get(`SELECT id, name, first_name, email, position, imageUrl FROM Employee WHERE Employee.id = ${this.lastID}`,
-            (error, employee) => {
-              res.status(201).json(employee);
-            });
-        }
-      });
 
-    })
-    .catch(error => { res.status(500).json({error}) })
+
+
+
+
+
+  });
+    
+               
+   
+
+
+
+    
     
 });// END SIGNIN ROUTE
 

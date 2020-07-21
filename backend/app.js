@@ -7,11 +7,37 @@ const bodyParser = require('body-parser');
 // import path
 const path = require('path');
 
+//import cors
+const cors = require('cors')
+
 // import express-session
 //const session= require('express-session');
 
 // create the server
 const app = express();
+
+// setting the response header for the preflight requests
+let optionsCors = { 
+  //Access-Control-Allow-Origin CORS header from all domains with wildcard
+  origin: "*",
+  //Access-Control-Allow-Methods CORS header
+  methods: "GET,PUT,POST,DELETE",
+  // Access-Control-Allow-Headers CORS header
+  allowedHeaders: "Origin, X-Requested-With, Content, Accept, Content-Type, Authorization"       
+}
+
+// cors default configuration is
+/*
+{
+"origin": "*",
+"methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
+"preflightContinue": false,
+"optionsSuccessStatus": 204,
+}
+*/
+
+// allowing cors requests for all routes with configuration
+app.use(cors(optionsCors));
 
 // use body-parser on all routes
 app.use(bodyParser.json());
