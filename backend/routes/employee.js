@@ -50,14 +50,14 @@ const values = {
     db.get(sql, values, (error, employee) => {
         // employee not existing
         if(!employee) {
-            return res.status(401).json({error: 'We cannot find you, sorry'})
+            return res.status(400).json({error: 'We cannot find you, sorry'})
         }
         // if employee exists check the password
         bcrypt.compare( req.body.employee.password, employee.password )
         // then if not valid throw an error
             .then( (valid) => {
                 if(!valid){
-                    return res.status(401).json({error : 'Invalid password'})
+                    return res.status(400).json({error : 'Invalid password'})
                 }
                 // if valid, send the response to the client with a token
                 res.status(200).json({
@@ -88,7 +88,7 @@ employeeRouter.post('/signin', [
    db.get('SELECT * FROM Employee WHERE Employee.email = $email;', {$email: req.body.employee.email}, (error, employee) => {
     // employee not existing
     if(employee) {
-        return res.status(401).json({error: "Un compte existe déjà avec cet email. Merci d'choisir un autre"})
+        return res.status(400).json({error: "Un compte existe déjà avec cet email. Merci d'en choisir un autre"})
     };
      //if (!errors.isEmpty()) {
           //return res.status(422).json(errors.array());
@@ -97,7 +97,7 @@ employeeRouter.post('/signin', [
             bcrypt.hash(req.body.employee.password, 10)
             .then( hash => {
             const   name = req.body.employee.name,
-                    firstname = req.body.employee.firstname,
+                    firstname = req.body.employee.firstname, 
                     email = req.body.employee.email;
                     password = hash,
                     position = null,
@@ -157,11 +157,12 @@ employeeRouter.get('/stories', employeeCtrl.getStories)
 // GET THE COMMENTS FOR ALL THE EMPLOYEES
 employeeRouter.get('/comments', moderate, employeeCtrl.getComments)
 
-// DISPLAY ONE EMPLOYEE
-employeeRouter.get('/:employeeId', auth, employeeCtrl.getOneEmployee);
 
 // GET ALL EMPLOYEES
 employeeRouter.get('/', employeeCtrl.getEmployees);
+
+// DISPLAY ONE EMPLOYEE
+employeeRouter.get('/:employeeId', auth, employeeCtrl.getOneEmployee);
 
 // UPDATE ONE EMPLOYEE
 employeeRouter.put('/:employeeId', auth, multer, employeeCtrl.updateOneEmployee);

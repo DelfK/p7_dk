@@ -47,7 +47,8 @@ exports.getOneEmployee = (req, res, next) => {
     db.get(sql, values, (error, employee) => {
         if (error) {
             next(error);
-          } else if(employee && employee.deleted === false) {
+
+          } else if (employee && employee.deleted === 0) {
             const image = employee.imageUrl;
             // send a placeholder for the profile image if none has been uploaded by the employee
             if(image === null) {

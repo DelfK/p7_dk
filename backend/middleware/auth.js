@@ -17,17 +17,18 @@ module.exports = (req, res, next) => {
     const employeeId = decodedToken.employeeId;
 
     // compare the user id from the request body and the user id from the token
-    if (req.body.employee.id && req.body.employee.id !== employeeId) {
+    /*if (!req.body.employee.id || (req.body.employee.id && req.body.employee.id !== employeeId)) {
       // if different > throw an error
       throw 'Invalid user ID';
     } else {
       // if same, execute the next middleware
       next();
-    }
+    }*/
+    next();
   } catch {
     // send an error
     res.status(401).json({
-      error: new Error('Invalid request!')
+      error: "The user don't have the authorization to do that"
     });
   }
 };
