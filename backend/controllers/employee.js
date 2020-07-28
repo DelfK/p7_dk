@@ -25,13 +25,36 @@ exports.getComments = (req, res, next) => {
 
 // GET ALL THE COMMENTS
 exports.getStories = (req, res, next) => {
-  const sql = 'SELECT Stories.id, Stories.title, Stories.content, Stories.imageUrl, Stories.employee_id, ' +
+  const sql = 'SELECT Stories.id, Stories.title, Stories.content, Stories.imageUrl, Stories.dateCreated ,Stories.employee_id,  ' +
             'Employee.name, Employee.first_name FROM Stories JOIN Employee ON Stories.employee_id = Employee.id';
             
   db.all(sql, (error, stories) => {
     if(error){
       next(error)
+
     } else if(stories) {
+
+        stories.forEach( element => {
+            // display random placeholder image if imageUrl null
+            let randomImage = Math.floor(Math.random() * 3);
+            if(!element.imageUrl) {
+                switch (randomImage) {
+                case 0:
+                  element.imageUrl = `${req.protocol}://${req.get('host')}/images/random_article_1.jpg`;
+                  break;
+                case 1:
+                  element.imageUrl = `${req.protocol}://${req.get('host')}/images/random_article_2.jpg`;
+                  break;
+                case 2:
+                  element.imageUrl = `${req.protocol}://${req.get('host')}/images/random_article_3.jpg`;
+                  break;
+                }
+                
+            }
+            
+        }
+            
+        );
       res.status(200).json(stories);
     } else {
       res.sendStatus(400);
@@ -41,7 +64,7 @@ exports.getStories = (req, res, next) => {
 
 // GET ONE EMPLOYEE
 exports.getOneEmployee = (req, res, next) => {
-    const sql = 'SELECT id, name, first_name, email, position, imageUrl, deleted FROM Employee WHERE Employee.id = $employeeId';
+    const sql = 'SELECT id, name, first_name, email, position, imageUrl, role, deleted FROM Employee WHERE Employee.id = $employeeId';
     const values = {$employeeId: `${req.params.employeeId}`};
 
     db.get(sql, values, (error, employee) => {
