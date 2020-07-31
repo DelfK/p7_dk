@@ -152,7 +152,7 @@ employeeRouter.post('/signin', [
 
 
 // GET THE STORIES FOR ALL THE EMPLOYEES
-employeeRouter.get('/stories', employeeCtrl.getStories)
+employeeRouter.get('/stories', auth, employeeCtrl.getStories)
 
 // GET THE COMMENTS FOR ALL THE EMPLOYEES
 employeeRouter.get('/comments', moderate, employeeCtrl.getComments)

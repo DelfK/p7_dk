@@ -212,7 +212,7 @@ exports.deleteOneEmployee = (req, res, next) => {
 // GET SHARED STORIES
 exports.displaySharedStories = (req, res, next) => {
   const employeeId = req.params.employeeId
-  const sql = 'SELECT DISTINCT Stories.title, Stories.employee_id, Employee.name, Employee.first_name ' +
+  const sql = 'SELECT DISTINCT Stories.id, Stories.title, Stories.imageUrl, Stories.employee_id, Employee.name, Employee.first_name ' +
               'FROM Stories JOIN Shares ON Stories.id = Shares.story_id '+
               'JOIN Employee ON Stories.employee_id = Employee.id ' +
               'WHERE Shares.recipient_id = $employeeId ';
