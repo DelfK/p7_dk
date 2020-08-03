@@ -38,9 +38,9 @@ exports.getAllStories = (req, res, next) => {
 
 // GET ONE STORY
 exports.getOneStory = (req, res, next) => {
-    const sql = 'SELECT Stories.id, Stories.title, Stories.content, Stories.imageUrl, Stories.dateCreated, Stories.employee_id, Employee.name, Employee.first_name, Employee.imageUrl AS profileImage, Employee.deleted ' +
-                'FROM Stories JOIN Employee ON Stories.employee_id = Employee.id '+
-                'WHERE Stories.id = $storyId ';
+    const sql = "SELECT Stories.id, Stories.title, Stories.content, Stories.imageUrl, strftime('%Y-%m-%d',Stories.dateCreated) AS dateCreated, Stories.employee_id, Employee.name, Employee.first_name, Employee.imageUrl AS profileImage, Employee.deleted " +
+                "FROM Stories JOIN Employee ON Stories.employee_id = Employee.id "+
+                "WHERE Stories.id = $storyId ";
    
     const value = { $storyId : req.params.storyId }
               
@@ -89,19 +89,13 @@ exports.createOneStory = (req, res, next) => {
     const imageUrl = newStory.imageUrl;
     const employeeId = req.params.employeeId;
 
-    //date
-    const monthNames = ["janvier", "février", "mars", "avril", "mai", "juin",
-  "juillet", "août", "septembre", "octobre", "novembre", "décembre"];
-    const date = new Date();
-    const dateCreated = date.getUTCDate() + ' ' + monthNames[date.getMonth()] + ' ' +  date.getFullYear();
 
-    const sql = 'INSERT INTO Stories (title, content, imageUrl, dateCreated, employee_id)' +
-    'VALUES ($title, $content, $imageUrl, $dateCreated, $employeeId)';
+    const sql = "INSERT INTO Stories (title, content, imageUrl, dateCreated, employee_id)" +
+    "VALUES ($title, $content, $imageUrl, datetime('now'), $employeeId)";
     const values = {
         $title : title,
         $content: content,
         $imageUrl: imageUrl,
-        $dateCreated : dateCreated,
         $employeeId: employeeId
     };
 

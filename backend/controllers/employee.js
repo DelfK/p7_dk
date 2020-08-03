@@ -8,7 +8,7 @@ const path = require('path');
 // fs
 const fs = require('fs');
 
-// GET ALL THE STORIES
+// GET ALL THE COMMENTS
 exports.getComments = (req, res, next) => {
   const sql = 'SELECT * FROM Comments';
             
@@ -23,10 +23,11 @@ exports.getComments = (req, res, next) => {
   })
 };
 
-// GET ALL THE COMMENTS
+// GET ALL THE STORIES
 exports.getStories = (req, res, next) => {
-  const sql = 'SELECT Stories.id, Stories.title, Stories.content, Stories.imageUrl, Stories.dateCreated ,Stories.employee_id,  ' +
-            'Employee.name, Employee.first_name FROM Stories JOIN Employee ON Stories.employee_id = Employee.id';
+  const sql = "SELECT Stories.id, Stories.title, Stories.content, Stories.imageUrl, strftime('%Y-%m-%d',Stories.dateCreated) AS dateCreated, Stories.employee_id,  " +
+            "Employee.name, Employee.first_name FROM Stories JOIN Employee ON Stories.employee_id = Employee.id "+
+            "ORDER BY dateCreated DESC"
             
   db.all(sql, (error, stories) => {
     if(error){
