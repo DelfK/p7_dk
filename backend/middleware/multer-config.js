@@ -14,7 +14,7 @@ const storage = multer.diskStorage({
   // configuring where to save the profile images
   destination: (req, file, callback) => {
     // get the name, firstname and id of the user
-    const employeeName = req.body.name;
+    /*const employeeName = req.body.name;
     const employeeFirstname = req.body.firstname;
     const employeeId = req.params.employeeId;
 
@@ -28,7 +28,9 @@ const storage = multer.diskStorage({
     // if folder exists
       // images uploaded are saved in the dynamic folder /images/id_nomPrenom
       return callback(null, dynamicFolder)
-    })
+
+    })*/
+    callback(null, 'images');
   },
 
   // setting the filename
