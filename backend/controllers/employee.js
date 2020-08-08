@@ -25,7 +25,7 @@ exports.getComments = (req, res, next) => {
 
 // GET ALL THE STORIES
 exports.getStories = (req, res, next) => {
-  const sql = "SELECT Stories.id, Stories.title, Stories.content, Stories.imageUrl, strftime('%Y-%m-%d',Stories.dateCreated) AS dateCreated, Stories.employee_id,  " +
+  const sql = "SELECT Stories.id, Stories.title, Stories.content, Stories.imageUrl, strftime('%Y-%m-%d %H:%M:%S',Stories.dateCreated) AS dateCreated, Stories.employee_id,  " +
             "Employee.name, Employee.first_name FROM Stories JOIN Employee ON Stories.employee_id = Employee.id "+
             "ORDER BY dateCreated DESC"
             
