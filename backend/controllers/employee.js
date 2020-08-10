@@ -23,6 +23,30 @@ exports.getComments = (req, res, next) => {
   })
 };
 
+// GET ALL THE COMMENTS
+exports.getStoryComments = (req, res, next) => {
+  const sql = "SELECT DISTINCT Comments.id, Comments.content, strftime('%Y-%m-%d %H:%M:%S', Comments.dateCreated) AS dateCreated, " +
+  "Comments.employee_id, Employee.imageUrl, Employee.name, Employee.first_name FROM Comments JOIN Stories ON Comments.story_id = $storyId " +
+  "JOIN Employee ON Comments.employee_id = Employee.id " +
+  "ORDER BY dateCreated DESC"
+  const value = {$storyId: `${req.params.storyId}`};
+  db.all(sql, value, (error, comments) => {
+    if(error){
+      next(error)
+    } else if(comments) {
+      comments.forEach(element => {
+        if(!element.imageUrl){
+          element.imageUrl = `${req.protocol}://${req.get('host')}/images/user.png`;
+        }
+      })
+      res.status(200).json(comments);
+    } else {
+      res.sendStatus(400);
+    }
+  })
+};
+
+
 // GET ALL THE STORIES
 exports.getStories = (req, res, next) => {
   const sql = "SELECT Stories.id, Stories.title, Stories.content, Stories.imageUrl, strftime('%Y-%m-%d %H:%M:%S',Stories.dateCreated) AS dateCreated, Stories.employee_id,  " +

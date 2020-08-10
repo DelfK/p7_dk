@@ -207,8 +207,8 @@ exports.shareAStory = (req, res, next) => {
 
 // COMMENT A STORY
 exports.commentAStory = (req, res, next) =>{
-    db.run('INSERT INTO Comments (content, story_id, employee_id)' +
-    'VALUES ($content, $storyId, $employeeId)',
+    db.run("INSERT INTO Comments (content, story_id, employee_id, dateCreated)" +
+    "VALUES ($content, $storyId, $employeeId, datetime('now'))",
     {
         $content : req.body.comment.content,
         $storyId: req.params.storyId,
@@ -217,7 +217,8 @@ exports.commentAStory = (req, res, next) =>{
         if(err){
             next(err)
         } else {
-            db.get(`SELECT * FROM Comments WHERE Comments.id = ${this.lastID}`, (error, comment) => {
+            db.get(`SELECT * FROM Comments JOIN Employee ON Comments.employee_id = Employee.id
+             WHERE Comments.id = ${this.lastID}`, (error, comment) => {
                 if(err){
                     next(err)
                 } else if(comment){

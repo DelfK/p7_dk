@@ -158,6 +158,11 @@ employeeRouter.get('/stories', auth, employeeCtrl.getStories)
 employeeRouter.get('/comments', moderate, employeeCtrl.getComments)
 
 
+
+// GET HE COMMENTS FOR ONE STORY
+employeeRouter.get('/stories/:storyId/comments', auth, employeeCtrl.getStoryComments)
+
+
 // GET ALL EMPLOYEES
 employeeRouter.get('/', employeeCtrl.getEmployees);
 

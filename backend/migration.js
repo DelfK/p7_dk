@@ -36,6 +36,7 @@ db.serialize( () => {
     '`approuve` BOOLEAN DEFAULT 1, ' +
     '`story_id` INTEGER NOT NULL, ' +
     '`employee_id` INTEGER, ' +
+    '`dateCreated` INTEGER NOT NULL, ' +
     'FOREIGN KEY(`story_id`) REFERENCES `Stories`(`id`) ' +
     'FOREIGN KEY(`employee_id`) REFERENCES `Employee`(`id`) )' );
     
