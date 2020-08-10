@@ -53,7 +53,9 @@ const values = {
             return res.status(400).json({error: 'We cannot find you, sorry'})
         }
         // if employee exists check the password
-        bcrypt.compare( req.body.employee.password, employee.password )
+        if(employee.deleted === 0){
+
+            bcrypt.compare( req.body.employee.password, employee.password )
         // then if not valid throw an error
             .then( (valid) => {
                 if(!valid){
@@ -72,6 +74,11 @@ const values = {
                 })
             })
             .catch( (error) => { res.status(500).json( { error } )} )
+
+        } else {
+            return res.status(400).json({error: "Votre compte n'existe plus"})
+        }
+        
 
     }); // END DB GET
   //} END CHECK VALIDITY ENDPUT

@@ -50,7 +50,7 @@ exports.getStoryComments = (req, res, next) => {
 // GET ALL THE STORIES
 exports.getStories = (req, res, next) => {
   const sql = "SELECT Stories.id, Stories.title, Stories.content, Stories.imageUrl, strftime('%Y-%m-%d %H:%M:%S',Stories.dateCreated) AS dateCreated, Stories.employee_id,  " +
-            "Employee.name, Employee.first_name FROM Stories JOIN Employee ON Stories.employee_id = Employee.id "+
+            "Employee.name, Employee.first_name, Employee.deleted FROM Stories JOIN Employee ON Stories.employee_id = Employee.id "+
             "ORDER BY dateCreated DESC"
             
   db.all(sql, (error, stories) => {
@@ -76,6 +76,12 @@ exports.getStories = (req, res, next) => {
                 }
                 
             }
+            if(element.deleted === 1){
+            
+            element.profileImage = `${req.protocol}://${req.get('host')}/images/user.png`;
+            element.name = "Groupomania";
+            element.first_name = " ";
+        };
             
         }
             
