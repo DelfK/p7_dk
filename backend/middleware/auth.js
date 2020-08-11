@@ -2,6 +2,7 @@
 const jwt = require('jsonwebtoken');
 
 
+
 // create a middleware to make sure only authorized requests (the ones with a token) 
 // can access the post, put and delete routes
 module.exports = (req, res, next) => {
@@ -25,10 +26,10 @@ module.exports = (req, res, next) => {
       next();
     }*/
     next();
-  } catch {
+  } catch(err) {
     // send an error
     res.status(401).json({
-      error: "The user don't have the authorization to do that"
+      error: err
     });
   }
 };

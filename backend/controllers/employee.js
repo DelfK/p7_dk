@@ -10,12 +10,20 @@ const fs = require('fs');
 
 // GET ALL THE COMMENTS
 exports.getComments = (req, res, next) => {
-  const sql = 'SELECT * FROM Comments';
+  const sql = "SELECT DISTINCT Comments.id, Comments.content, strftime('%Y-%m-%d %H:%M:%S', Comments.dateCreated) AS dateCreated, " +
+  "Comments.employee_id, Employee.imageUrl, Employee.name, Employee.first_name, Stories.title FROM Comments JOIN Stories ON Comments.story_id = stories.id " +
+  "JOIN Employee ON Comments.employee_id = Employee.id " +
+  "ORDER BY dateCreated DESC";
             
   db.all(sql, (error, comments) => {
     if(error){
       next(error)
     } else if(comments) {
+      comments.forEach(element => {
+        if(!element.imageUrl){
+          element.imageUrl = `${req.protocol}://${req.get('host')}/images/user.png`;
+        }
+      })
       res.status(200).json(comments);
     } else {
       res.sendStatus(400);
