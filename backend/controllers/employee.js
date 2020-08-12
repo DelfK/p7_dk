@@ -10,7 +10,7 @@ const fs = require('fs');
 
 // GET ALL THE COMMENTS
 exports.getComments = (req, res, next) => {
-  const sql = "SELECT DISTINCT Comments.id, Comments.content, strftime('%Y-%m-%d %H:%M:%S', Comments.dateCreated) AS dateCreated, " +
+  const sql = "SELECT DISTINCT Comments.id, Comments.content, Comments.approuve, strftime('%Y-%m-%d %H:%M:%S', Comments.dateCreated) AS dateCreated, " +
   "Comments.employee_id, Employee.imageUrl, Employee.name, Employee.first_name, Stories.title FROM Comments JOIN Stories ON Comments.story_id = stories.id " +
   "JOIN Employee ON Comments.employee_id = Employee.id " +
   "ORDER BY dateCreated DESC";
