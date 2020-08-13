@@ -13,24 +13,29 @@ const MIME_TYPES = {
 const storage = multer.diskStorage({
   // configuring where to save the profile images
   destination: (req, file, callback) => {
-    // get the name, firstname and id of the user
-    /*const employeeName = req.body.name;
-    const employeeFirstname = req.body.firstname;
-    const employeeId = req.params.employeeId;
 
-    // create the dynamic folder where to a upload images of a user 
-    const dynamicFolder = `images/${employeeId}_${employeeName}${employeeFirstname}`;
-    // create one if folder does not exist
-    fs.exists(dynamicFolder, exist => {
-      if(!exist){
-        fs.mkdir(dynamicFolder, error => callback(error,dynamicFolder ))
-      }
-    // if folder exists
-      // images uploaded are saved in the dynamic folder /images/id_nomPrenom
-      return callback(null, dynamicFolder)
+  callback(null, 'images');
+
+  
+  // In case we want to put the uploaded image in a dynamic folder named after id and fullname of the user
+  // get the name, firstname and id of the user
+  /*const employeeName = req.body.name;
+  const employeeFirstname = req.body.firstname;
+  const employeeId = req.params.employeeId;
+
+  // create the dynamic folder where to a upload images of a user 
+  const dynamicFolder = `images/${employeeId}_${employeeName}${employeeFirstname}`;
+  // create one if folder does not exist
+  fs.exists(dynamicFolder, exist => {
+    if(!exist){
+      fs.mkdir(dynamicFolder, error => callback(error,dynamicFolder ))
+    }
+  // if folder exists
+    // images uploaded are saved in the dynamic folder /images/id_nomPrenom
+    return callback(null, dynamicFolder)
 
     })*/
-    callback(null, 'images');
+    
   },
 
   // setting the filename

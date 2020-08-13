@@ -10,9 +10,6 @@ const path = require('path');
 //import cors
 const cors = require('cors')
 
-// import express-session
-//const session= require('express-session');
-
 // create the server
 const app = express();
 
@@ -26,16 +23,6 @@ let optionsCors = {
   allowedHeaders: "Origin, X-Requested-With, Content, Accept, Content-Type, Authorization"       
 }
 
-// cors default configuration is
-/*
-{
-"origin": "*",
-"methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
-"preflightContinue": false,
-"optionsSuccessStatus": 204,
-}
-*/
-
 // allowing cors requests for all routes with configuration
 app.use(cors(optionsCors));
 
@@ -44,22 +31,8 @@ app.use(bodyParser.json());
 
 
 // serving static images from the images folder with express static
-  // using the path /images to serve the images from the folder /images
-  // getting the images from a static folder using the absolute path with the root folder dirname
-  // result > https://localhost:3000/images/[filename]
   app.use('/images', express.static(path.join(__dirname, 'images')));
 
-// use session
-/*app.use(session({
-    secret: 'secret-key',
-    resave: false,
-    saveUninitialized: true,
-  }));*/
-
-// Testing a route
-app.get('/', (req, res, next) => {
-    res.send('This is only the beginning my friend!')
-});
 
 // Routes
 const apiRouter = require('./routes/api');

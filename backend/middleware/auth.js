@@ -2,7 +2,6 @@
 const jwt = require('jsonwebtoken');
 
 
-
 // create a middleware to make sure only authorized requests (the ones with a token) 
 // can access the post, put and delete routes
 module.exports = (req, res, next) => {
@@ -17,14 +16,6 @@ module.exports = (req, res, next) => {
     // get the user id from the decoded token
     const employeeId = decodedToken.employeeId;
 
-    // compare the user id from the request body and the user id from the token
-    /*if (!req.body.employee.id || (req.body.employee.id && req.body.employee.id !== employeeId)) {
-      // if different > throw an error
-      throw 'Invalid user ID';
-    } else {
-      // if same, execute the next middleware
-      next();
-    }*/
     next();
   } catch(err) {
     // send an error

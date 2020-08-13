@@ -1,7 +1,6 @@
 const employeeRouter = require('express').Router();
 
 
-
 //DB
 const sqlite3 = require('sqlite3');
 const db = new sqlite3.Database('./database.sqlite');
@@ -18,7 +17,6 @@ const { check, validationResult } = require('express-validator');
 // multer
 const multer = require('../middleware/multer-config');
 
-
 // import the controllers
 const employeeCtrl = require('../controllers/employee');
 
@@ -28,7 +26,9 @@ const moderate = require('../middleware/moderate');
 
 const storyRouter = require('./story');
 
+// Mount all the stories routes on 'api/employee/:employeeId/stories'
 employeeRouter.use('/:employeeId/stories', storyRouter);
+
 
 // LOGIN
 employeeRouter.post('/login', [
@@ -86,20 +86,23 @@ const values = {
 
 // SIGNIN
 employeeRouter.post('/signin', [
-    check('name').exists().isLength({min: 4}).trim().escape().withMessage('Name must have more than 4 characters'),
-    check('firstname').exists().isLength({min: 4}).trim().escape().withMessage('Name must have more than 4 characters'),
-    check('email', 'Your email is not valid').not().isEmpty().normalizeEmail(),
-    check('password', 'Your password must be at least 8 characters').not().isEmpty().isLength({min: 8})
+    check('employee.name', 'Nom non valide').isAlpha('fr-FR').blacklist('& / < > $ * { } ! = - + § | % ^'),
+    check('employee.firstname', 'Prénom non valide').isAlpha('fr-FR').blacklist('& / < > $ * { } ! = - + § | % ^'),
+    check('employee.email', 'Your email is not valid').not().isEmpty().normalizeEmail(),
+    check('employee.password', 'Your password must be at least 8 characters').not().isEmpty().isLength({min: 8})
 ], (req, res, next) => {
-   //const errors = validationResult(req);
+
+   const errors = validationResult(req);
    db.get('SELECT * FROM Employee WHERE Employee.email = $email;', {$email: req.body.employee.email}, (error, employee) => {
     // employee not existing
     if(employee) {
-        return res.status(400).json({error: "Un compte existe déjà avec cet email. Merci d'en choisir un autre"})
+        return res.status(400).json({error: "Un compte existe déjà avec cet email. Merci d'en choisir un autre"}) 
     };
-     //if (!errors.isEmpty()) {
-          //return res.status(422).json(errors.array());
-          //} else {
+    
+    if (!errors.isEmpty()) {
+          return res.status(422).json(errors.array());
+    } else {
+            
 
             bcrypt.hash(req.body.employee.password, 10)
             .then( hash => {
@@ -137,7 +140,7 @@ employeeRouter.post('/signin', [
   
             })
             .catch(error => { res.status(500).json({error: error}) })
-          //}// END ELSE
+          }// END ELSE
   
 
 
@@ -165,8 +168,7 @@ employeeRouter.get('/stories', auth, employeeCtrl.getStories)
 employeeRouter.get('/comments', moderate, employeeCtrl.getComments)
 
 
-
-// GET HE COMMENTS FOR ONE STORY
+// GET THE COMMENTS FOR ONE STORY
 employeeRouter.get('/stories/:storyId/comments', auth, employeeCtrl.getStoryComments)
 
 

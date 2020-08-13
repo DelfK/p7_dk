@@ -4,15 +4,20 @@ const storyRouter = require('express').Router({mergeParams: true});
 const sqlite3 = require('sqlite3');
 const db = new sqlite3.Database('./database.sqlite');
 
-// import express-validator
-const { check, validationResult } = require('express-validator');
-
 // multer
 const multer = require('../middleware/multer-config');
 
 // auth
 const auth = require('../middleware/auth');
+
+//moderate
 const moderate = require('../middleware/moderate');
+
+//validate
+const validate = require('../middleware/validateStory');
+
+// import express-validator
+const { check, validationResult } = require('express-validator');
 
 // import the controllers
 const employeeCtrl = require('../controllers/employee');
@@ -28,7 +33,11 @@ storyRouter.get('/', storyCtrl.getAllStories);
 storyRouter.get('/:storyId', storyCtrl.getOneStory);
 
 // CREATE ONE STORY
-storyRouter.post('/', auth, multer, storyCtrl.createOneStory);
+storyRouter.post('/', [
+    check('story.title', 'Titre non valide').matches(/^[a-z0-9\s!]+$/i),
+    check('story.content', 'Contenu non valide').matches(/^[a-zA-Z0-9\s.,'-]+$/igm),
+   
+], auth, validate, multer, storyCtrl.createOneStory);
 
 // UPDATE ONE STORY
 storyRouter.put('/:storyId', auth,multer, storyCtrl.updateOneStory);
