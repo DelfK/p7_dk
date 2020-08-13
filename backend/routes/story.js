@@ -49,7 +49,9 @@ storyRouter.delete('/:storyId', auth, storyCtrl.deleteOneStory);
 storyRouter.post('/:storyId/shares', auth, storyCtrl.shareAStory);
 
 // POST ONE COMMENT
-storyRouter.post('/:storyId/comments', auth, storyCtrl.commentAStory)
+storyRouter.post('/:storyId/comments', [
+    check('comment.content', 'Contenu non valide').matches(/^[a-z0-9\s.,'-]+$/igm)
+], auth, validate, storyCtrl.commentAStory)
 
 
 
