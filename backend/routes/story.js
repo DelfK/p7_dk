@@ -34,8 +34,8 @@ storyRouter.get('/:storyId', storyCtrl.getOneStory);
 
 // CREATE ONE STORY
 storyRouter.post('/', [
-    check('story.title', 'Titre non valide').matches(/^[a-z0-9\s!]+$/i),
-    check('story.content', 'Contenu non valide').matches(/^[a-zA-Z0-9\s.,'-]+$/igm),
+    check('story.title', 'Titre non valide').optional().matches(/^[a-z0-9\s!]+$/i),
+    check('story.content', 'Contenu non valide').optional().matches(/^[a-zA-Z0-9\s.,'-]+$/igm),
    
 ], auth, validate, multer, storyCtrl.createOneStory);
 
