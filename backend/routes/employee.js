@@ -1,4 +1,5 @@
 const employeeRouter = require('express').Router();
+const { v4: uuidv4 } = require('uuid');
 
 
 //DB
@@ -63,7 +64,7 @@ const values = {
                 }
                 // if valid, send the response to the client with a token
                 res.status(200).json({
-                    employeeId: employee.id,
+                    employeeId: employee.uuid,
                     // generate a token containing the user id and a secret key with the function sign
                     token: jwt.sign(
                         { employeeId : employee.id},
@@ -112,19 +113,21 @@ employeeRouter.post('/signin', [
                     password = hash,
                     position = null,
                     imageUrl = null;
+                    uuid = uuidv4();
             if(!name || !firstname || !email || !password) {
                 return res.sendStatus(400);
             };
   
-            const sql = 'INSERT INTO Employee (name, first_name, email, password, position, imageUrl)' +
-              'VALUES ($name, $firstname, $email, $password, $position, $imageUrl)';
+            const sql = 'INSERT INTO Employee (name, first_name, email, password, position, imageUrl, uuid)' +
+              'VALUES ($name, $firstname, $email, $password, $position, $imageUrl, $uuid)';
             const values = {
                 $name: name,
                 $firstname: firstname,
                 $email: email,
                 $password: password,
                 $position: position,
-                $imageUrl: imageUrl
+                $imageUrl: imageUrl,
+                $uuid: uuid
             };
   
             db.run(sql, values, function(error) {

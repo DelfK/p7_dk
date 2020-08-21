@@ -103,7 +103,7 @@ exports.getStories = (req, res, next) => {
 
 // GET ONE EMPLOYEE
 exports.getOneEmployee = (req, res, next) => {
-    const sql = 'SELECT id, name, first_name, email, position, imageUrl, role, deleted FROM Employee WHERE Employee.id = $employeeId';
+    const sql = 'SELECT id, name, first_name, email, position, imageUrl, role, deleted, uuid FROM Employee WHERE Employee.uuid = $employeeId';
     const values = {$employeeId: `${req.params.employeeId}`};
 
     db.get(sql, values, (error, employee) => {
