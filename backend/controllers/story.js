@@ -105,7 +105,7 @@ exports.createOneStory = (req, res, next) => {
         } else {
           db.get(`SELECT id, title, content, imageUrl, dateCreated, employee_id FROM Stories WHERE Stories.id = ${this.lastID}`,
             (error, story) => {
-              res.status(201).json(story);
+              res.status(201).json({story: story});
             });
         }
       });

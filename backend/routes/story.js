@@ -34,8 +34,8 @@ storyRouter.get('/:storyId', storyCtrl.getOneStory);
 
 // CREATE ONE STORY
 storyRouter.post('/', [
-    check('story.title', 'Titre non valide').optional().matches(/^[a-z0-9\s!]+$/i),
-    check('story.content', 'Contenu non valide').optional().matches(/^[a-zA-Z0-9\s.,'-]+$/igm),
+    check('story.title', 'Titre non valide').optional().matches(/^[-'0-9a-zÀ-ÿ\s!]+$/i),
+    check('story.content', 'Contenu non valide').optional().matches(/^[-'0-9a-zÀ-ÿ\s.,'-]+$/igm),
    
 ], auth, validate, multer, storyCtrl.createOneStory);
 
@@ -50,7 +50,7 @@ storyRouter.post('/:storyId/shares', auth, storyCtrl.shareAStory);
 
 // POST ONE COMMENT
 storyRouter.post('/:storyId/comments', [
-    check('comment.content', 'Contenu non valide').matches(/^[a-z0-9\s.,'-]+$/igm)
+    check('comment.content', 'Contenu non valide').matches(/^[-'0-9a-zÀ-ÿ\s.,'-]+$/igm)
 ], auth, validate, storyCtrl.commentAStory)
 
 
