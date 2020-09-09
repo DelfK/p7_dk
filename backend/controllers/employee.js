@@ -8,6 +8,8 @@ const path = require('path');
 // fs
 const fs = require('fs');
 
+
+
 // GET ALL THE COMMENTS
 exports.getComments = (req, res, next) => {
   const sql = "SELECT DISTINCT Comments.id, Comments.content, Comments.approuve, strftime('%Y-%m-%d %H:%M:%S', Comments.dateCreated) AS dateCreated, " +
@@ -56,12 +58,44 @@ exports.getStoryComments = (req, res, next) => {
 
 
 // GET ALL THE STORIES
-exports.getStories = (req, res, next) => {
-  const sql = "SELECT Stories.id, Stories.title, Stories.content, Stories.imageUrl, strftime('%Y-%m-%d %H:%M:%S',Stories.dateCreated) AS dateCreated, Stories.employee_id,  " +
-            "Employee.name, Employee.first_name, Employee.deleted FROM Stories JOIN Employee ON Stories.employee_id = Employee.id "+
-            "ORDER BY dateCreated DESC"
+exports.getStoriesCount = (req, res, next) => {
+  const sql = "SELECT COUNT(*) AS Total FROM Stories";
             
   db.all(sql, (error, stories) => {
+
+    if(error){
+      next(error)
+
+    } else if(stories) {
+      res.status(200).json(stories);
+
+    } else {
+      res.sendStatus(400);
+    }
+  })
+};
+
+
+// GET ALL THE STORIES
+exports.getStories = (req, res, next) => {
+  let sql
+  if(req.query.limit && req.query.offset) {
+    sql = "SELECT Stories.id, Stories.title, Stories.content, Stories.imageUrl, strftime('%Y-%m-%d %H:%M:%S',Stories.dateCreated) AS dateCreated, Stories.employee_id,  " +
+            "Employee.name, Employee.first_name, Employee.deleted FROM Stories JOIN Employee ON Stories.employee_id = Employee.id "+
+            "ORDER BY dateCreated DESC LIMIT $offset, $limit";
+
+  } else {
+    sql = "SELECT Stories.id, Stories.title, Stories.content, Stories.imageUrl, strftime('%Y-%m-%d %H:%M:%S',Stories.dateCreated) AS dateCreated, Stories.employee_id,  " +
+            "Employee.name, Employee.first_name, Employee.deleted FROM Stories JOIN Employee ON Stories.employee_id = Employee.id "+
+            "ORDER BY dateCreated DESC";
+  }
+  
+  const values = {
+    $limit : req.query.limit,
+    $offset : req.query.offset
+  }
+            
+  db.all(sql, values, (error, stories) => {
     if(error){
       next(error)
 
@@ -100,6 +134,7 @@ exports.getStories = (req, res, next) => {
     }
   })
 };
+
 
 // GET ONE EMPLOYEE
 exports.getOneEmployee = (req, res, next) => {

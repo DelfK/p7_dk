@@ -163,9 +163,12 @@ employeeRouter.post('/signin', [
     
 });// END SIGNIN ROUTE
 
+// GET THE STORIES COUNT
+employeeRouter.get('/stories/count', auth, employeeCtrl.getStoriesCount)
 
 // GET THE STORIES FOR ALL THE EMPLOYEES
 employeeRouter.get('/stories', auth, employeeCtrl.getStories)
+
 
 // GET THE COMMENTS FOR ALL THE EMPLOYEES
 employeeRouter.get('/comments', moderate, employeeCtrl.getComments)
