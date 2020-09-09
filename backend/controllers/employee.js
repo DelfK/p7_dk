@@ -286,11 +286,26 @@ exports.deleteOneEmployee = (req, res, next) => {
 // GET SHARED STORIES
 exports.displaySharedStories = (req, res, next) => {
   const employeeId = req.params.employeeId
-  const sql = 'SELECT DISTINCT Stories.id, Stories.title, Stories.imageUrl, Stories.employee_id, Employee.name, Employee.first_name ' +
+  let sql;
+  if(req.query.limit && req.query.offset){
+    sql = 'SELECT DISTINCT Stories.id, Stories.title, Stories.imageUrl, Stories.employee_id, Employee.name, Employee.first_name ' +
               'FROM Stories JOIN Shares ON Stories.id = Shares.story_id '+
               'JOIN Employee ON Stories.employee_id = Employee.id ' +
-              'WHERE Shares.recipient_id = $employeeId ';
-  const values = { $employeeId: employeeId };
+              'WHERE Shares.recipient_id = $employeeId ' +
+              'ORDER BY dateCreated DESC LIMIT $offset, $limit';
+  }else{
+    sql = 'SELECT DISTINCT Stories.id, Stories.title, Stories.imageUrl, Stories.employee_id, Employee.name, Employee.first_name ' +
+              'FROM Stories JOIN Shares ON Stories.id = Shares.story_id '+
+              'JOIN Employee ON Stories.employee_id = Employee.id ' +
+              'WHERE Shares.recipient_id = $employeeId ' +
+              'ORDER BY dateCreated DESC';
+  }
+  
+  const values = { 
+    $employeeId: employeeId,
+    $offset : req.query.offset,
+    $limit: req.query.limit
+  };
 
   db.all(sql, values, (err, shares) => {
     if(err){
